@@ -21,7 +21,9 @@ function onClick(ev) {
   const closeBtn = document.createElement("button")
   closeBtn.textContent = "X"
 
+  
   closeBtn.addEventListener('click', onCloseBtn)
+
   function onCloseBtn() {
     item.remove()
     localStorage.removeItem(inputValue)
@@ -30,40 +32,37 @@ function onClick(ev) {
   item.appendChild(closeBtn)
   linkList.appendChild(item)
 
-  localStorage.setItem(inputValue, inputValue);
-
   input.value = ""
+  localStorage.removeItem(inputValue);
 }
 
+input.addEventListener("input", () => {
+  localStorage.setItem("inputValue", input.value);
+});
 
+function populateData() {
+  linkList.innerHTML = "";
 
+  input.value = localStorage.getItem("inputValue")
 
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+  if (key !== "inputValue") {
 
+    const item = document.createElement("li");
+    item.textContent = key;
 
-  linkList.addEventListener("click", onLinkList);
+    const closeBtn = document.createElement("button");
+    closeBtn.textContent = "X";
 
-  function onLinkList(ev) {
-    if (ev.target.nodeName !== "BUTTON") {
-      // its not a button
-      return;
-    }
-    const activeBtn = document.querySelector('.bookmarkList.item')
-    if (activeBtn) {
-    activeBtn.classList.remove('active')
-    }
-    let selectColor = ev.target.dataset.color
-    text.textContent = `Selected color: - ${selectColor}`
-    text.style.color = selectColor
-    ev.target.classList.add('active')
+    closeBtn.onclick = () => {
+      item.remove();
+      localStorage.removeItem(key);
+    };
+
+    item.appendChild(closeBtn);
+    linkList.appendChild(item);
   }
-
-
-  function populateData() {
-    const data = localStorage.getItem(inputValue);
-    if (data) {
-      const parseData = JSON.parse(data);
-      input.value = parseData.name;
-    }
-  }
-
+}
+}
   populateData()
